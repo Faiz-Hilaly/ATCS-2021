@@ -37,11 +37,7 @@ class TicTacToe:
         return True
         
 
-    def place_player(self, player, row, col):
-        while not self.is_valid_move(row,col):
-            row = int(input("Please enter a valid row number: "))
-            col = int(input("Please enter a valid column number: "))
-        
+    def place_player(self, player, row, col):        
         self.board[row][col] = player
         return
 
@@ -53,12 +49,28 @@ class TicTacToe:
         row = int(input("Please enter a row number between 0 and 2: "))
         col = int(input("Please enter a column number between 0 and 2: "))
 
+        while not self.is_valid_move(row,col):
+            row = int(input("Please enter a valid row number: "))
+            col = int(input("Please enter a valid column number: "))
+
         self.place_player(player,row,col)
+    
+    def take_random_turn(self, player):
+        row = random.randint(0,2)
+        col = random.randint(0,2)
         
+        while not self.is_valid_move(row,col):
+            row = random.randint(0,2)
+            col = random.randint(0,2)
+            
+        return self.place_player(player,row,col)
 
     def take_turn(self, player):
         # TODO: Simply call the take_manual_turn function
-        self.take_manual_turn(player)
+        if player == 1:
+            self.take_manual_turn(player)
+        if player == 2:
+            self.take_random_turn(player)
         return
 
     def check_col_win(self, player):

@@ -39,7 +39,7 @@ class TicTacToe:
       row = int(input("Please enter a valid row number: "))
       col = int(input("Please enter a valid column number: "))
 
-    print("CP D")  
+      
     self.place_player(player,row,col)
   
   def take_random_turn(self, player):

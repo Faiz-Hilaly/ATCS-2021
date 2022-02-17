@@ -59,23 +59,21 @@ class TicTacToe:
       self.take_minimax_turn(player)
 
   def take_minimax_turn(self, player):
-    score, row, col = self.minimax(player)
+    score, row, col = self.minimax(player, 4)
     self.place_player(player, row, col)
 
-  def minimax(self, player):
+  def minimax(self, player, depth):
     # Base case: Player 1 (X) tries to minimize, player -1 (O) maximizes
-    if self.check_win(-1): return 10, None, None
-    if self.check_win(1): return -10, None, None
-    if self.check_tie(): return 0, None, None
+    if self.check_win(-1): return 10 + depth, None, None
+    if self.check_win(1): return -10 - depth, None, None
+    if self.check_tie() or depth == 0: return 0, None, None
 
     bestscore, row, col = player*20, None, None
     for i in [0,1,2]:
       for j in [0,1,2]:
         if self.is_valid_move(i, j):
           self.place_player(player, i, j)
-          #temp_result = self.minimax(-1*player)
-          #score, r, c = temp_result
-          score, r, c = self.minimax(-1*player)
+          score, r, c = self.minimax(-1*player, depth - 1)
           if player*(score - bestscore) < 0:
             bestscore, row, col = score, i, j
           self.place_player(0, i, j)

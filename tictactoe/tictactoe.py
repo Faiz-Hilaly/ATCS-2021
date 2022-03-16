@@ -1,4 +1,5 @@
 import random
+import time
 
 class TicTacToe:
   def __init__(self):
@@ -58,9 +59,15 @@ class TicTacToe:
       print("It is player " + str(player*-2) + "'s turn")
       self.take_minimax_turn(player)
 
+#before ab pruning, this took 3.1951401233673096 for a blank board
   def take_minimax_turn(self, player):
-    score, row, col = self.minimax(player, 4)
+    start = time.time()
+    #score, row, col = self.minimax(player, 9999)
+    score, row, col = self.minimax_alpha_beta(player, 9999, -30, 30)
+
+    end = time.time()
     self.place_player(player, row, col)
+    print("This turn took:", end - start, "seconds")
 
   def minimax(self, player, depth):
     # Base case: Player 1 (X) tries to minimize, player -1 (O) maximizes
@@ -74,6 +81,32 @@ class TicTacToe:
         if self.is_valid_move(i, j):
           self.place_player(player, i, j)
           score, r, c = self.minimax(-1*player, depth - 1)
+          if player*(score - bestscore) < 0:
+            bestscore, row, col = score, i, j
+          self.place_player(0, i, j)
+    return bestscore, row, col
+
+  def minimax_alpha_beta(self, player, depth, alpha, beta):
+    #alpha = the lowest possible score (assuming player -1 is perfect)
+    #beta = highest possible score assuming player 1 is perect
+    #if alpha > beta, we stop searching 
+    # Base case: Player 1 (X) tries to minimize, player -1 (O) maximizes
+    if self.check_win(-1): return 10 + depth, None, None
+    if self.check_win(1): return -10 - depth, None, None
+    if self.check_tie() or depth == 0: return 0, None, None
+
+    bestscore, row, col = player*20, None, None
+    for i in [0,1,2]:
+      for j in [0,1,2]:
+        if alpha > beta: break
+        if self.is_valid_move(i, j):
+          self.place_player(player, i, j)
+          score, r, c = self.minimax_alpha_beta(-1*player, depth - 1, alpha, beta)
+          #player 1 is the minimizing player
+          if player == 1:
+            if score < beta: beta = score
+          if player == -1:
+            if score > alpha: alpha = score
           if player*(score - bestscore) < 0:
             bestscore, row, col = score, i, j
           self.place_player(0, i, j)

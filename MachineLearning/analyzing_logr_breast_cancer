@@ -1,0 +1,8 @@
+1. The data includes the year the surgery was performed; however, we did not account for
+that in our model. What do you think would have happened if we also accounted for the
+year the surgery was performed?
+The later the surgery was performed, the more likely the patient would be to survive because of advancements in the medical field that have lead to higher survival rates.
+
+2. What do the coefficients/weights for the model tell you about age and the number of
+nodes in relation to survival rate?
+Axillary nodes are much more detrimental to a patient's surivival rate than their age.

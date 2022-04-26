@@ -39,7 +39,7 @@ print("Winter Severity coef: ", model.coef_[1])
 print("Intercept: ", model.intercept_)
 
 '''Test Model'''
-#Get the predicted y values for x_test - retunr an array
+#Get the predicted y values for x_test - return an array
 predict = model.predict(x_test)
 
 #Compare the actual and predicted values

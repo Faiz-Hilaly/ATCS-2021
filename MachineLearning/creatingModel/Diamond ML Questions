@@ -1,11 +1,18 @@
 Diamond ML Questions
 1. What ML model did you use and why?
+I used a logistic regression because there are only two options for the output.
 
 2. What are you trying to predict? What columns did you use to make this prediction?
+I am trying to predict the diamond cut, essentially its quality. I'm using the carat, depth, and table size as my independent variables.
 
 3. Did you use all of the columns in the dataset to create your model? Why or why not?
+Yes I did, because they all contributed to a more accurate model.
 
 4. How confident are you in your model’s predictions?
+I am approximately 95% confident in my model's predictions.
 
 5. Make a prediction with your model. List the variables/features you used and predictions
 you received.
+	Will make a prediction for this data: [ 0.38 59.7  62.  ]
+	Predicted value: ['Premium']
+	Actual value: Premium

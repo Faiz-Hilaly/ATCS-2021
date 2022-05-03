@@ -1,7 +1,7 @@
 import random
 import time
 
-class Game:
+class TicTacToe:
   def __init__(self):
     self.board = [[0,0,0,0,0,0,0],
                   [0,0,0,0,0,0,0],
@@ -34,21 +34,26 @@ class Game:
   def is_valid_move(self, row, col):
     if 0 > min(row,col) or max(row,col) > 6: return False
     return self.board[row][col] == 0
-    
+   
+  def is_valid_piece(self, player, row, col):
+    if player == self.board[row][col]:
+      return True
+    else:
+      return False
 
   def place_player(self, player, row, col):    
     self.board[row][col] = player
 
   def take_manual_turn(self, player):
-    row = int(input("Please enter a row number between 0 and 2: "))
-    col = int(input("Please enter a column number between 0 and 2: "))
+    row = int(input("Please enter a row number between 0 and 6: "))
+    col = int(input("Please enter a column number between 0 and 6: "))
 
     while not self.is_valid_move(row,col):
       row = int(input("Please enter a valid row number: "))
       col = int(input("Please enter a valid column number: "))
 
     self.place_player(player,row,col)
-  
+
   def take_turn(self, player):
     if player == 1:
       print("It is player " + str(player) + "'s turn")

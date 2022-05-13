@@ -1,3 +1,6 @@
+#Version 6
+#5/8/2022
+
 import random
 import time
 

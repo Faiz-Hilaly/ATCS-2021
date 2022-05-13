@@ -1,5 +1,3 @@
-#Version 1
-
 import random
 import time
 
@@ -73,13 +71,56 @@ class TicTacToe:
 
     self.place_player(player,row,col)
 
-  def take_turn(self, player):
-    if player == 1:
-      print("It is player " + str(player) + "'s turn")
-      self.take_manual_turn(player)
-    if player == -1:
-      print("It is player " + str(player*-2) + "'s turn")
-      self.take_manual_turn(player)
+  def check_threat(self,player)
+      b = self.board
+    def check_three(x1,y1,x2,y2,x3,y3):
+      return b[x1][y1] == player and b[x2][y2] == player and b[x3][y3] == player
+    for row in range(0,7):
+      if check_three(row,0,row,1,row,2): return 1
+      if check_three(row,1,row,2,row,3): return 2
+      if check_three(row,2,row,3,row,4): return 2
+      if check_three(row,3,row,4,row,5): return 2
+      if check_three(row,4,row,5,row,6): return 3
+    for col in range(0,7):
+      if check_three(0,col,1,col,2,col): return 4
+      if check_three(1,col,2,col,3,col): return 5
+      if check_three(2,col,3,col,4,col): return 5
+      if check_three(3,col,4,col,5,col): return 5
+      if check_three(4,col,5,col,6,col): return 6
+    if check_three(0,0,1,1,2,2): return 7
+    if check_three(1,1,2,2,3,3): return 8
+    if check_three(2,2,3,3,4,4): return 8
+    if check_three(3,3,4,4,5,5): return 8
+    if check_three(4,4,5,5,6,6): return 9
+    if check_three(0,6,1,5,2,4): return 10
+    if check_three(1,5,2,4,3,3): return 11
+    if check_three(2,4,3,3,4,2): return 11
+    if check_three(3,3,4,2,5,1): return 11
+    if check_three(4,2,5,1,6,0): return 12
+    return False  
+    
+    def check_four(x1,y1,x2,y2,x3,y3,x4,y4):
+      return b[x1][y1] == player and b[x2][y2] == player and b[x3][y3] == player and b[x4][y4] == player and b[x5][y5] == player
+    for row in range(0,7):
+      if check_four(row,0,row,1,row,2,row,3): return True
+      if check_four(row,1,row,2,row,3,row,4): return True
+      if check_four(row,2,row,3,row,4,row,5): return True
+      if check_four(row,3,row,4,row,5,row,6): return True
+    for col in range(0,7):
+      if check_four(0,col,1,col,2,col,3,col): return True
+      if check_four(1,col,2,col,3,col,4,col): return True
+      if check_four(2,col,3,col,4,col,5,col): return True
+      if check_four(3,col,4,col,5,col,6,col): return True
+    if check_four(0,0,1,1,2,2,3,3): return True
+    if check_four(1,1,2,2,3,3,4,4): return True
+    if check_four(2,2,3,3,4,4,5,5): return True
+    if check_four(3,3,4,4,5,5,6,6): return True
+    if check_four(0,6,1,5,2,4,3,3): return True
+    if check_four(1,5,2,4,3,3,4,2): return True
+    if check_four(2,4,3,3,4,2,5,1): return True
+    if check_four(3,3,4,2,5,1,6,0): return True
+    return False
+
 
   def check_win(self, player):
     b = self.board
@@ -94,12 +135,10 @@ class TicTacToe:
       if check_five(1,col,2,col,3,col,4,col,5,col): return True
       if check_five(2,col,3,col,4,col,5,col,6,col): return True
 
-    if check_five(0,0,1,1,2,2,3,3,4,4): return True
-    if check_five(1,1,2,2,3,3,4,4,5,5): return True
-    if check_five(2,2,3,3,4,4,5,5,6,6): return True
-    if check_five(0,6,1,5,2,4,3,3,4,2): return True
-    if check_five(1,5,2,4,3,3,4,2,5,1): return True
-    if check_five(2,4,3,3,4,2,5,1,6,0): return True
+    for row in range(0,3):
+      for col in range(0,3):
+        if check_five(row,col,row+1,col+1,row+2,col+2,row+3,col+3,row+4,col+4): return True
+        if check_five(6-row,col,5-row,col+1,4-row,col+2,3-row,col+3,2-row,col+4): return True
     return False
 
   def check_tie(self):
@@ -114,14 +153,17 @@ class TicTacToe:
     while True:
       self.print_board()
       if(c >= 2):
-        turn_type = int(input("Would you like to (1)place a new piece or (2)move existing pieces."+
-                              "Please type the number that corresponds with your choice."))
-        while not (turn_type == 1 or turn_type == 2):
-          turn_type = int(input("Please select your choice by typing 1 or 2"))
-        if turn_type == 1:
-          self.take_turn(player)
-        if turn_type == 2:
-          self.move_piece(player)          
+        if player == 1:
+          turn_type = int(input("Would you like to (1)place a new piece or (2)move existing pieces."+
+                                "Please type the number that corresponds with your choice: "))
+          while not (turn_type == 1 or turn_type == 2):
+            turn_type = int(input("Please select your choice by typing 1 or 2: "))
+          if turn_type == 1:
+            self.take_turn(player)
+          if turn_type == 2:
+            self.move_piece(player)
+        if player == -1:
+          self.take_turn(player)         
       else:
         self.take_turn(player)
 

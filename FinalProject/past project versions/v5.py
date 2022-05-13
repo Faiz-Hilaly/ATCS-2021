@@ -1,5 +1,3 @@
-#Version 1
-
 import random
 import time
 
@@ -73,13 +71,86 @@ class TicTacToe:
 
     self.place_player(player,row,col)
 
+  def take_algorithm_turn(self,player):
+    #make it so that human can make a move 
+    #then computer makes a move based on which ever gets the highest score
+    best_row = 0
+    best_col = 0
+    best_score = -10000
+
+    for row in range(0,7):
+      for col in range(0,7):
+        if self.is_valid_move(row,col):
+          self.place_player(player,row,col)
+          score = self.board_score(player)+self.board_score(-player)
+          print(score)
+          if score > best_score:
+            best_score = score
+            best_row = row
+            best_col = col
+            self.place_player(0,row,col)
+          else:
+            self.place_player(0,row,col)
+    self.place_player(player,best_row,best_col)
+
+
   def take_turn(self, player):
     if player == 1:
       print("It is player " + str(player) + "'s turn")
       self.take_manual_turn(player)
     if player == -1:
       print("It is player " + str(player*-2) + "'s turn")
-      self.take_manual_turn(player)
+      self.take_algorithm_turn(player)
+
+  
+  def board_score(self, player):
+    score = 0
+    score_four = player*-100
+    score_three = player*-50
+    b = self.board
+
+    #Lower score means player 1 is better, higher score means player 2 is better
+    #need to create an algorithm that recognizes boards where opponent has many pieces in a row are bad
+    #and board where algorithm has many points in a row is good
+    #make a test that looks at 5 squares and does a test to see what is in those 5 squares.
+    def check_three(x1,y1,x2,y2,x3,y3):
+      return b[x1][y1] == player and b[x2][y2] == player and b[x3][y3] == player
+    for row in range(0,7):
+      if check_three(row,0,row,1,row,2): score = score + score_three
+      if check_three(row,1,row,2,row,3): score = score + score_three
+      if check_three(row,2,row,3,row,4): score = score + score_three
+      if check_three(row,3,row,4,row,5): score = score + score_three
+      if check_three(row,4,row,5,row,6): score = score + score_three
+    for col in range(0,7):
+      if check_three(0,col,1,col,2,col): score = score + score_three
+      if check_three(1,col,2,col,3,col): score = score + score_three
+      if check_three(2,col,3,col,4,col): score = score + score_three
+      if check_three(3,col,4,col,5,col): score = score + score_three
+      if check_three(4,col,5,col,6,col): score = score + score_three
+    for row in range(0,5):
+      for col in range(0,5):
+        if check_three(row,col,row+1,col+1,row+2,col+2): score = score + score_three
+        if check_three(6-row,col,5-row,col+1,4-row,col+2): score = score + score_three
+
+    def check_four(x1,y1,x2,y2,x3,y3,x4,y4):
+      return b[x1][y1] == player and b[x2][y2] == player and b[x3][y3] == player and b[x4][y4] == player
+    for row in range(0,7):
+      if check_four(row,0,row,1,row,2,row,3): score = score + score_four
+      if check_four(row,1,row,2,row,3,row,4): score = score + score_four
+      if check_four(row,2,row,3,row,4,row,5): score = score + score_four
+      if check_four(row,3,row,4,row,5,row,6): score = score + score_four
+    for col in range(0,7):
+      if check_four(0,col,1,col,2,col,3,col): score = score + score_four
+      if check_four(1,col,2,col,3,col,4,col): score = score + score_four
+      if check_four(2,col,3,col,4,col,5,col): score = score + score_four
+      if check_four(3,col,4,col,5,col,6,col): score = score + score_four
+    
+    for row in range(0,4):
+      for col in range(0,4):
+        if check_four(row,col,row+1,col+1,row+2,col+2,row+3,col+3): score = score + score_four
+        if check_four(6-row,col,5-row,col+1,4-row,col+2,3-row,col+3): score = score + score_four 
+    return score
+
 
   def check_win(self, player):
     b = self.board
@@ -94,12 +165,10 @@ class TicTacToe:
       if check_five(1,col,2,col,3,col,4,col,5,col): return True
       if check_five(2,col,3,col,4,col,5,col,6,col): return True
 
-    if check_five(0,0,1,1,2,2,3,3,4,4): return True
-    if check_five(1,1,2,2,3,3,4,4,5,5): return True
-    if check_five(2,2,3,3,4,4,5,5,6,6): return True
-    if check_five(0,6,1,5,2,4,3,3,4,2): return True
-    if check_five(1,5,2,4,3,3,4,2,5,1): return True
-    if check_five(2,4,3,3,4,2,5,1,6,0): return True
+    for row in range(0,3):
+      for col in range(0,3):
+        if check_five(row,col,row+1,col+1,row+2,col+2,row+3,col+3,row+4,col+4): return True
+        if check_five(6-row,col,5-row,col+1,4-row,col+2,3-row,col+3,2-row,col+4): return True
     return False
 
   def check_tie(self):
@@ -114,14 +183,17 @@ class TicTacToe:
     while True:
       self.print_board()
       if(c >= 2):
-        turn_type = int(input("Would you like to (1)place a new piece or (2)move existing pieces."+
-                              "Please type the number that corresponds with your choice."))
-        while not (turn_type == 1 or turn_type == 2):
-          turn_type = int(input("Please select your choice by typing 1 or 2"))
-        if turn_type == 1:
-          self.take_turn(player)
-        if turn_type == 2:
-          self.move_piece(player)          
+        if player == 1:
+          turn_type = int(input("Would you like to (1)place a new piece or (2)move existing pieces."+
+                                "Please type the number that corresponds with your choice: "))
+          while not (turn_type == 1 or turn_type == 2):
+            turn_type = int(input("Please select your choice by typing 1 or 2: "))
+          if turn_type == 1:
+            self.take_turn(player)
+          if turn_type == 2:
+            self.move_piece(player)
+        if player == -1:
+          self.take_turn(player)         
       else:
         self.take_turn(player)
 
